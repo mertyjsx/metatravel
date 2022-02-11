@@ -1,29 +1,47 @@
+@import "~react-image-gallery/styles/css/image-gallery.css";
+
 .App {
   text-align: center;
 }
+*{
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+}
 
+.truncate {
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.back-button{
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  background-color: black;
+  border-radius: 20px;
+  width: 200px;
+  height: 40px;
+  z-index: 2;
+  color: white;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
-
+.back-button:hover{
+  cursor: pointer;
+}
 .App-link {
   color: #61dafb;
 }
@@ -35,4 +53,52 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.container-room{
+  width: 100%;
+  height: 1vh;
+}
+.rdrMonths{
+  display: flex;
+  align-items: center !important;
+}
+
+
+.mtb-1{
+  margin: 2rem 0px !important;
+}
+.mt-1{
+  margin-top: 1rem !important;
+}
+
+.p-1{
+  padding: 0.5rem;
+}
+.p-2{
+  padding: 1.5rem;
+}
+
+.w-100{
+  width: 100%;
+}
+.text-field{
+  width: 45%;
+}
+.c-button{
+  width: 90%;
+  align-self: center;
+  
+}
+
+.summary-card{
+  margin: 1rem 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0.5rem;
+ 
+  text-align: center;
+  align-items: center;
 }
