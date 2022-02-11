@@ -197,7 +197,7 @@ export default function App() {
     wallet.requestSignIn(
       "example-contract.testnet", // contract requesting access
       "Metatravel", // optional
-      "http://localhost:3000/"
+      "https://metatravel.vercel.app"
     );
   };
   const handleDate = (item) => {
