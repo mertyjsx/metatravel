@@ -36,7 +36,7 @@ var {hash,signature,receiver_id,signer_id} = transaction
          <h3>receiver : {receiver_id&&receiver_id}</h3>
          <h3>signer : {signer_id&&signer_id}</h3>
          <Button className="mtb-1" onClick={()=>setOpen(false)} variant="contained" color="primary" >
-                 Close
+                 Close Modal
                 </Button>
         </Box>
 
