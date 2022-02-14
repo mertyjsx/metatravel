@@ -1,6 +1,6 @@
 import { Button, Grid, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { collection, doc, setDoc,addDoc } from "firebase/firestore";
+import { collection, doc, setDoc,addDoc, getDoc } from "firebase/firestore";
 
 import { app,db } from "../firebase";
 import { Route, Link, useParams, useLocation } from "react-router-dom";
@@ -49,7 +49,7 @@ const products = [
   },
 ];
 
-export default function App() {
+export default function App({wallet,near,user}) {
   const [state, setState] = useState([
     {
       startDate: new Date(),
@@ -65,12 +65,12 @@ export default function App() {
     id_number: "",
     email: "",
     adults: 0,
+    room_id:1,
     children: 0,
     startDate: new Date(),
     endDate: null,
   });
-  const [near, setNear] = useState(null);
-  const [wallet, setWallet] = useState(null);
+  const [ready, setReady] = useState(false);
   const [modal, setModal] = useState(false);
   const [transaction, setTransaction] = useState({
     hash: "",
@@ -91,51 +91,66 @@ export default function App() {
     setData({ ...data, [name]: val });
   };
 
-  const { connect, keyStores, WalletConnection } = nearAPI;
 
-  const config = {
-    networkId: "testnet",
-    keyStore: new keyStores.BrowserLocalStorageKeyStore(),
-    nodeUrl: "https://rpc.testnet.near.org",
-    walletUrl: "https://wallet.testnet.near.org",
-    helperUrl: "https://helper.testnet.near.org",
-    explorerUrl: "https://explorer.testnet.near.org",
-  };
+useEffect(()=>{
+if(ready){
+  checkAfterTransaction()
+}
+},[ready])
+  
 
-  const initNear = async () => {
-    const near = await connect(config);
-    const wallet = new WalletConnection(near);
-    setNear(near);
-    setWallet(wallet);
-
-    if (wallet.isSignedIn()) {
-      setModal(false);
-    }
+  const checkAfterTransaction =  () => {
+   
     let hash = query.get("transactionHashes");
+    console.log("wallet",wallet)
+    console.log("hash",hash)
     if (hash && wallet) {
-      setTimeout(() => {
-        getTransactionDetails(wallet, near, hash);
-      }, 2000);
+
+      
+    console.log("current data ",data)
+        getTransactionDetails(hash);
+    
     }
   };
   // connect to NEAR
 
-  async function getState(txHash, accountId, provider) {
-    const result = await provider.txStatus(txHash, accountId);
+  async function getState(txHash,provider) {
+    console.log("tx",txHash)
+    console.log("user",user)
+    console.log("wallet",wallet)
+    const result = await provider.txStatus(txHash, wallet.getAccountId());
+    console.log("hi")
+      addCollection(result.transaction.signature)
     console.log("Result: ", result.transaction);
     setTransaction(result.transaction);
+    console.log("hi")
     setModalTransaction(true);
+
+   
+
     
   }
 
-  const addCollection = async () => {
+  const addCollection = async (signature) => {
     // Add a new document with a generated id
-    const bookings = doc(collection(app, "bookings"));
+    console.log("data",user)
+    const bookings = doc(collection(db, "bookings"));
     console.log("bookings",bookings)
-
+   console.log(signature)
+  
     try {
-      const docRef = await addDoc(collection(db, "bookings"), { ...data, user_id: wallet.getAccountId() });
-      console.log("Document written with ID: ", docRef.id);
+      const docRef = doc(db, "bookings", signature);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        console.log("Booking already exist:", docSnap.data());
+      } else {
+        // doc.data() will be undefined in this case
+        const docRef =  await setDoc(doc(db, "bookings", signature),  { ...data, user_id:user, signature });
+        console.log("Document written with ID: ", docRef);
+      }
+     
+     
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -144,7 +159,7 @@ export default function App() {
   
   };
 
-  const getTransactionDetails = async (wallet, near, hash) => {
+  const getTransactionDetails = async (hash) => {
     let wallet_id = wallet.getAccountId();
     let providers = nearAPI.providers;
 
@@ -157,14 +172,12 @@ export default function App() {
     // account ID associated with the transaction
     const ACCOUNT_ID = wallet_id;
 
-    getState(TX_HASH, ACCOUNT_ID, provider);
+    getState(TX_HASH,provider);
 
   };
 
   // create wallet connection
   useEffect(() => {
-    initNear();
-
     const data = localStorage.getItem("booking_data");
     console.log(data);
     if (data) {
@@ -181,10 +194,16 @@ export default function App() {
         },
       ]);
     }
+
+    setReady(true)
+  
+
+   
   }, []);
 
   const nextStep = () => {
-    if (!wallet.isSignedIn()) {
+    console.log("user ",user)
+    if (!user) {
       setModal(true);
     } else {
       setStep(1);
@@ -197,7 +216,7 @@ export default function App() {
     wallet.requestSignIn(
       "example-contract.testnet", // contract requesting access
       "Metatravel", // optional
-      "https://metatravel.vercel.app"
+      "http://localhost:3000"
     );
   };
   const handleDate = (item) => {
@@ -210,33 +229,59 @@ export default function App() {
   };
 
   const calculateTotal = () => {
-    return data.adults * 10 + data.children * 5;
+ 
+
+    var date1 = new Date(data.startDate);
+    var date2 = new Date(data.endDate);
+      
+    // To calculate the time difference of two dates
+    var Difference_In_Time = date2.getTime() - date1.getTime();
+      
+    // To calculate the no. of days between two dates
+    var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+    //https://near-contract-helper.onrender.com/fiat
+console.log("difference in day ",data.adults * 10 + data.children * 5*Difference_In_Days)
+
+    return data.adults * 10 + data.children * 5*Difference_In_Days;
   };
 
   const sendNear = async () => {
     const account = wallet.account();
     console.log(account);
+/* global BigInt */
+localStorage.setItem("booking_data", JSON.stringify(data));
+
     try {
+
+      let response=await fetch("https://near-contract-helper.onrender.com/fiat")
+     let data=await response.json()
+   
+      let near_price=data.near.usd
+      console.log("near price",near_price)
+      let usd_to_near=   Math.round((calculateTotal()/near_price + Number.EPSILON) * 100) / 100;
+      /* global BigInt */
+   var final_val =BigInt(usd_to_near*1000000000000000000000000) 
+  console.log(final_val.toString())
       let res = await account.sendMoney(
         "skrite16.testnet", // receiver account
-        "1000000000000000000000000" // amount in yoctoNEAR
+        `${final_val}`// amount in yoctoNEAR
       );
+
+     
       console.log("response", res);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const disconnect=()=>{
-    wallet.signOut();
-    setWallet(null)
-    setStep(1)
-  }
-console.log(wallet?.isSignedIn())
+  
+
+
   return (
     <div className="container-room w-100">
       <Modal open={modal} signIn={signIn} setOpen={(payload)=>setModal(payload)}/>
-      <TranscationModal open={modalTransaction} transaction={transaction} setOpen={(payload)=>setModalTransaction(payload)}/>
+      <TranscationModal addCollection={addCollection} open={modalTransaction} transaction={transaction} setOpen={(payload)=>setModalTransaction(payload)}/>
       <Grid
         className="w-100"
         container
@@ -340,15 +385,15 @@ console.log(wallet?.isSignedIn())
                       primary={product.name}
                       secondary={`${data.adults} adult , ${data.children} children`}
                     />
-                    <Typography variant="body2">{calculateTotal()}$</Typography>
+                    <h2 variant="body2">{calculateTotal()}$</h2>
                   </ListItem>
                 ))}
 
                 <ListItem sx={{ py: 1, px: 0 }}>
                   <ListItemText primary="Total" />
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  <h2 variant="subtitle1" sx={{ fontWeight: 700 }}>
                     {calculateTotal()}$
-                  </Typography>
+                  </h2>
                 </ListItem>
               </List>
               <Grid
@@ -372,9 +417,7 @@ console.log(wallet?.isSignedIn())
           )}
         </Grid>
       </Grid>
-     {wallet?.isSignedIn()&&<Button onClick={disconnect} variant="contained" color="primary">
-                disconnect wallet
-                </Button>}
+   
     </div>
   );
 }

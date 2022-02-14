@@ -1,17 +1,39 @@
-import React from "react"
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Button, Grid, TextField } from "@mui/material";
+const Nav = ({signOut}) => {
 
 
-const Navbar=()=>{
+  
+  return (
+    <Fragment>
+      <div className="navbarContainer">
+      <Button
+               
+                className="navButton"
+                variant="contained"
+                color="primary"
+              >
+            Profile
+              </Button>
+              <Button
+               
+                className="navButton"
+                variant="contained"
+                color="primary"
+                onClick={()=>signOut()}
+              >
+                Disconnect
+              </Button>
+      
+      </div>
+    </Fragment>
+  );
+};
 
-    return(<div className="navbar">
+export default Nav;
 
-
-    <div className="back-button">
-        Back To Metaverse
-    </div>
-    </div>)
-}
-
-
-export default Navbar
+/**
+ *     {wallet?.isSignedIn()&&<Button  variant="contained" color="primary">
+    disconnect wallet
+    </Button>}
+ */
