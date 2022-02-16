@@ -12,20 +12,38 @@ import BookIcon from '@mui/icons-material/Book';
 import { collection, query, where, doc, setDoc,addDoc, getDocs } from "firebase/firestore";
 
 import { app,db } from "../firebase";
-export default function IconLabelTabs({user,near}) {
+export default function IconLabelTabs({user,near,wallet}) {
   const [value, setValue] = React.useState(0);
   const [bookings,setBookings]=React.useState([])
+  const [nft,setNft]=React.useState([])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
 React.useEffect(async ()=>{
-console.log("profile")
+
+try {
+  const response= await fetch(`https://api-v2-mainnet.paras.id/token?exclude_total_burn=true&owner_id=${user}`)
+   const nftData=await response.json()
+ 
+   if(nftData.data.results){
+     setNft(nftData.data.results)
+     
+   }
+} catch (error) {
+  console.log(error)
+
+}
+
+
    try {
-    const account = await near.account(user);
-   var details= await account.getAccountDetails();
-    console.log("details",details)
+   
+   
+   
+
+ 
+    console.log(user)
 const q = query(collection(db, "bookings"), where("user_id", "==", user));
 
 const querySnapshot = await getDocs(q);
@@ -37,7 +55,7 @@ const querySnapshot = await getDocs(q);
       temp.push(doc.data())
     });
 setBookings(temp)
-       console.log(temp)
+      
    } catch (error) {
        console.log(error)
    }
@@ -47,23 +65,24 @@ setBookings(temp)
 
   return (
       <div className='profileContainer'>
-          <h2 className='center'>skrite15.mainnet
+          <h2 className='center '><span className="truncate">{user}</span>
 
               <VerifiedIcon className="ml-1"></VerifiedIcon>
           </h2>
     <Tabs value={value} onChange={handleChange} aria-label="icon label tabs example">
-      <Tab onClick={()=>setValue(0)} icon={<BurstModeIcon />} label="Nfts" />
-      <Tab onClick={()=>setValue(1)} icon={<BookIcon />} label="Bookings" />
+    <Tab onClick={()=>setValue(0)} icon={<BookIcon />} label="Bookings" />
+      <Tab onClick={()=>setValue(1)} icon={<BurstModeIcon />} label="Nfts" />
+     
     
     </Tabs>
-    {value===0&& <Grid container className="mt-2" justifyContent={"center"} alignItems="center">
+    {value===1&& <Grid container className="mt-2" justifyContent={"center"} alignItems="center">
   {
-        [].map(item=> <Grid container lg={4}  justifyContent={"center"} alignItems="center"><Card/></Grid>)
+        nft.map(data=> <Grid container lg={4}  justifyContent={"center"} alignItems="center"><Card data={data} type={"nft"} /></Grid>)
     }
   </Grid>}
- {value===1&& <Grid container className="mt-2" justifyContent={"center"} alignItems="center">
+ {value===0&& <Grid container className="mt-2" justifyContent={"center"} alignItems="center">
   {
-        bookings.map(data=> <Grid  container lg={4}  justifyContent={"center"} alignItems="center"><Card data={data}/></Grid>)
+        bookings.map(data=> <Grid  container lg={4}  justifyContent={"center"} alignItems="center"><Card data={data} type={"booking"}/></Grid>)
     }
   </Grid>}
     </div>

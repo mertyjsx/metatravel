@@ -1,8 +1,8 @@
 import { Button, Grid, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { collection, doc, setDoc,addDoc, getDoc } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc, getDoc } from "firebase/firestore";
 
-import { app,db } from "../firebase";
+import { app, db } from "../firebase";
 import { Route, Link, useParams, useLocation } from "react-router-dom";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -20,24 +20,8 @@ import { setDate } from "date-fns";
 import * as nearAPI from "near-api-js";
 import Modal from "./modal";
 import TranscationModal from "./TransactionModal";
-const images = [
-  {
-    original: "https://www.ahstatic.com/photos/b1i2_roskc_00_p_1024x768.jpg",
-    thumbnail: "https://www.ahstatic.com/photos/b1i2_roskc_00_p_1024x768.jpg",
-  },
-  {
-    original:
-      "https://cf.bstatic.com/xdata/images/hotel/max1280x900/162290679.jpg?k=84cd5f24ac68dc3ca3b0eb4d8e69f5b40c06b6387eb7bbc977c2f69f40c0111e&o=&hp=1",
-    thumbnail:
-      "https://cf.bstatic.com/xdata/images/hotel/max1280x900/162290679.jpg?k=84cd5f24ac68dc3ca3b0eb4d8e69f5b40c06b6387eb7bbc977c2f69f40c0111e&o=&hp=1",
-  },
-  {
-    original:
-      "https://www.oyster.com/wp-content/uploads/sites/35/2019/05/deluxe-room-v4047251-1440-1024x683.jpg",
-    thumbnail:
-      "https://www.oyster.com/wp-content/uploads/sites/35/2019/05/deluxe-room-v4047251-1440-1024x683.jpg",
-  },
-];
+import roomData from "../helper/roomData"
+
 
 const steps = ["Booking info", "Complete Booking"];
 
@@ -49,7 +33,9 @@ const products = [
   },
 ];
 
-export default function App({wallet,near,user}) {
+const URL="https://metatravel.vercel.app"
+
+export default function App({ wallet, near, user }) {
   const [state, setState] = useState([
     {
       startDate: new Date(),
@@ -65,7 +51,7 @@ export default function App({wallet,near,user}) {
     id_number: "",
     email: "",
     adults: 0,
-    room_id:1,
+    room_id: 1,
     children: 0,
     startDate: new Date(),
     endDate: null,
@@ -86,77 +72,71 @@ export default function App({wallet,near,user}) {
     return React.useMemo(() => new URLSearchParams(search), [search]);
   }
   let query = useQuery();
-
+  let id = query.get("id");
+console.log(query)
   const handleChange = (name, val) => {
     setData({ ...data, [name]: val });
   };
 
+  useEffect(() => {
+    if (ready) {
+      checkAfterTransaction();
+    }
+  }, [ready]);
 
-useEffect(()=>{
-if(ready){
-  checkAfterTransaction()
-}
-},[ready])
-  
-
-  const checkAfterTransaction =  () => {
-   
+  const checkAfterTransaction = () => {
     let hash = query.get("transactionHashes");
-    console.log("wallet",wallet)
-    console.log("hash",hash)
+    console.log("wallet", wallet);
+    console.log("hash", hash);
     if (hash && wallet) {
-
-      
-    console.log("current data ",data)
-        getTransactionDetails(hash);
-    
+      console.log("current data ", data);
+      getTransactionDetails(hash);
     }
   };
   // connect to NEAR
 
-  async function getState(txHash,provider) {
-    console.log("tx",txHash)
-    console.log("user",user)
-    console.log("wallet",wallet)
+  async function getState(txHash, provider) {
+  
     const result = await provider.txStatus(txHash, wallet.getAccountId());
-    console.log("hi")
-      addCollection(result.transaction.signature)
+
+    addCollection(result.transaction.signature);
     console.log("Result: ", result.transaction);
     setTransaction(result.transaction);
-    console.log("hi")
+    console.log("hi");
     setModalTransaction(true);
-
-   
-
-    
   }
 
   const addCollection = async (signature) => {
     // Add a new document with a generated id
-    console.log("data",user)
+    console.log("data", user);
     const bookings = doc(collection(db, "bookings"));
-    console.log("bookings",bookings)
-   console.log(signature)
-  
+    console.log("bookings", bookings);
+    console.log(signature);
+
     try {
       const docRef = doc(db, "bookings", signature);
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
         console.log("Booking already exist:", docSnap.data());
       } else {
         // doc.data() will be undefined in this case
-        const docRef =  await setDoc(doc(db, "bookings", signature),  { ...data, user_id:user, signature });
+        const docRef = await setDoc(doc(db, "bookings", signature), {
+          ...data,
+          user_id: user,
+          signature:signature,
+          room_id:id,
+          url:roomData[id]?.images[0].original,
+          room_name:roomData[id].name
+
+        });
         console.log("Document written with ID: ", docRef);
       }
-     
-     
     } catch (e) {
       console.error("Error adding document: ", e);
     }
 
     // later...
-  
   };
 
   const getTransactionDetails = async (hash) => {
@@ -165,15 +145,14 @@ if(ready){
 
     //network config (replace testnet with mainnet or betanet)
     const provider = new providers.JsonRpcProvider(
-      "https://archival-rpc.testnet.near.org"
+      "https://archival-rpc.mainnet.near.org"
     );
 
     const TX_HASH = hash;
     // account ID associated with the transaction
     const ACCOUNT_ID = wallet_id;
 
-    getState(TX_HASH,provider);
-
+    getState(TX_HASH, provider);
   };
 
   // create wallet connection
@@ -195,14 +174,11 @@ if(ready){
       ]);
     }
 
-    setReady(true)
-  
-
-   
+    setReady(true);
   }, []);
 
   const nextStep = () => {
-    console.log("user ",user)
+    console.log("user ", user);
     if (!user) {
       setModal(true);
     } else {
@@ -214,9 +190,9 @@ if(ready){
 
   const signIn = () => {
     wallet.requestSignIn(
-      "example-contract.testnet", // contract requesting access
+      user, // contract requesting access
       "Metatravel", // optional
-      "http://localhost:3000"
+      `https://metatravel.vercel.app/rooms?id=${id}`
     );
   };
   const handleDate = (item) => {
@@ -229,59 +205,65 @@ if(ready){
   };
 
   const calculateTotal = () => {
- 
-
     var date1 = new Date(data.startDate);
     var date2 = new Date(data.endDate);
-      
+
     // To calculate the time difference of two dates
     var Difference_In_Time = date2.getTime() - date1.getTime();
-      
+
     // To calculate the no. of days between two dates
     var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
 
     //https://near-contract-helper.onrender.com/fiat
-console.log("difference in day ",data.adults * 10 + data.children * 5*Difference_In_Days)
 
-    return data.adults * 10 + data.children * 5*Difference_In_Days;
+    return data.adults * 0.2 + data.children * 0.1 * Difference_In_Days;
   };
 
   const sendNear = async () => {
     const account = wallet.account();
     console.log(account);
-/* global BigInt */
-localStorage.setItem("booking_data", JSON.stringify(data));
+    /* global BigInt */
+    localStorage.setItem("booking_data", JSON.stringify(data));
 
     try {
+      let response = await fetch(
+        "https://near-contract-helper.onrender.com/fiat"
+      );
+      let data = await response.json();
 
-      let response=await fetch("https://near-contract-helper.onrender.com/fiat")
-     let data=await response.json()
-   
-      let near_price=data.near.usd
-      console.log("near price",near_price)
-      let usd_to_near=   Math.round((calculateTotal()/near_price + Number.EPSILON) * 100) / 100;
+      let near_price = data.near.usd;
+      console.log("near price", near_price);
+      let usd_to_near =
+        Math.round((calculateTotal() / near_price + Number.EPSILON) * 100) /
+        100;
       /* global BigInt */
-   var final_val =BigInt(usd_to_near*1000000000000000000000000) 
-  console.log(final_val.toString())
+      var final_val = BigInt(usd_to_near * 1000000000000000000000000);
+      console.log(final_val.toString());
       let res = await account.sendMoney(
-        "skrite16.testnet", // receiver account
-        `${final_val}`// amount in yoctoNEAR
+        "616a3afcca582619b0fa5eae57a4f79dff5a147bea4e31774cf61072248c9cfc", // receiver account
+        `${final_val}` // amount in yoctoNEAR
       );
 
-     
       console.log("response", res);
     } catch (error) {
       console.log(error);
     }
   };
-
-  
-
-
-  return (
+  console.log(id)
+if(!id) return <div></div>
+else return (
     <div className="container-room w-100">
-      <Modal open={modal} signIn={signIn} setOpen={(payload)=>setModal(payload)}/>
-      <TranscationModal addCollection={addCollection} open={modalTransaction} transaction={transaction} setOpen={(payload)=>setModalTransaction(payload)}/>
+      <Modal
+        open={modal}
+        signIn={signIn}
+        setOpen={(payload) => setModal(payload)}
+      />
+      <TranscationModal
+        addCollection={addCollection}
+        open={modalTransaction}
+        transaction={transaction}
+        setOpen={(payload) => setModalTransaction(payload)}
+      />
       <Grid
         className="w-100"
         container
@@ -289,7 +271,7 @@ localStorage.setItem("booking_data", JSON.stringify(data));
         justifyContent={"space-between"}
       >
         <Grid className="image-container w-100" xs={12} md={8}>
-          <ImageGallery showBullets={false} showNav={false} items={images} />
+          <ImageGallery showBullets={false} showNav={false} items={roomData[id]?.images} />
         </Grid>
         <Grid
           container
@@ -344,11 +326,20 @@ localStorage.setItem("booking_data", JSON.stringify(data));
               />
               <Button
                 onClick={() => nextStep()}
-                className="c-button"
+                className="c-button mb-1"
                 variant="contained"
                 color="primary"
               >
                 Next{" "}
+              </Button>
+              <Button
+                onClick={() => nextStep()}
+                className="c-button"
+                variant="contained"
+                color="primary"
+                style={{backgroundColor:"black"}}
+              >
+               Tour the room 
               </Button>
             </Grid>
           )}
@@ -417,7 +408,6 @@ localStorage.setItem("booking_data", JSON.stringify(data));
           )}
         </Grid>
       </Grid>
-   
     </div>
   );
 }

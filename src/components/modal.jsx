@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-
+import CloseIcon from '@mui/icons-material/Close';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -20,7 +20,7 @@ export default function KeepMountedModal({open,signIn,setOpen}) {
 console.log(open)
 
   return (
-    <div>
+    <div className='relative'>
       
       <Modal
        keepMounted
@@ -40,9 +40,8 @@ console.log(open)
                  Connect Near Wallet
                 </Button>
 
-                <Button className="mtb-1" onClick={()=>setOpen(false)} variant="contained" color="primary" >
-                 Close Modal
-                </Button>
+                <CloseIcon className="close-icon" onClick={()=>setOpen(false)} />
+             
         </Box>
       </Modal>
     </div>
