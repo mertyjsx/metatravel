@@ -55,7 +55,7 @@ export default function App() {
     wallet.requestSignIn(
      "616a3afcca582619b0fa5eae57a4f79dff5a147bea4e31774cf61072248c9cfc", // contract requesting access
       "Metatravel", // optional
-      "http://localhost:3000"
+      "https://metatravel.vercel.app"
     );
   };
   return (
