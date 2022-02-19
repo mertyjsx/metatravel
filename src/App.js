@@ -13,6 +13,7 @@ import Navbar from "./components/navbar";
 import Profile from "./components/profile";
 import Home from "./components/home";
 import { Buffer } from "buffer";
+import Webgl from "./components/unityWebgl"
 global.Buffer = Buffer;
 const { connect, keyStores, WalletConnection } = nearAPI;
 const config = {
@@ -70,6 +71,9 @@ export default function App() {
           <Switch>
             <Route exact path="/">
               <Home near={near} wallet={wallet} user={wallet?.getAccountId()} />
+            </Route>
+            <Route exact path="/tour-hotel">
+              <Webgl/>
             </Route>
             <Route exact path="/profile">
               {wallet?.isSignedIn() ? <Profile near={near} wallet={wallet} user={wallet?.getAccountId()}/> : <Redirect to="/"></Redirect>}

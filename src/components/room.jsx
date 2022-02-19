@@ -332,7 +332,8 @@ else return (
               >
                 Next{" "}
               </Button>
-              <Button
+             <Link className="center" to={`/tour-hotel?room-id=${parseInt(id)+1}`}>
+             <Button
                 onClick={() => nextStep()}
                 className="c-button"
                 variant="contained"
@@ -340,7 +341,7 @@ else return (
                 style={{backgroundColor:"black"}}
               >
                Tour the room 
-              </Button>
+              </Button></Link>
             </Grid>
           )}
           {step == 1 && (

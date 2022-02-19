@@ -208,7 +208,11 @@ a{
   box-sizing: border-box;
 }
 
-
+.unityContainer{
+  width: 99vw;
+  height: 99vh;
+  
+}
 
 .purpleBox{
   background-color: black;

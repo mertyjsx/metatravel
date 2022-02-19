@@ -14,7 +14,12 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import HomeCard from "./homePageCard"
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
+import {
+  
+  Link
+
+} from "react-router-dom";
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function Copyright() {
@@ -77,7 +82,7 @@ export default function Album() {
               justifyContent="center"
             >
            
-              <Button variant="outlined">Tour THE HOTEL</Button>
+              <Link to="/tour-hotel"><Button variant="outlined">Tour THE HOTEL</Button></Link>
             </Stack>
           </Container>
         </Box>
