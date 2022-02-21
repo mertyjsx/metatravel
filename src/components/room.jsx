@@ -34,7 +34,7 @@ const products = [
   },
 ];
 
-const URL="metatravel.vercel.app"
+const URL="https://metatravel.vercel.app"
 
 export default function App({ wallet, near, user }) {
   const [state, setState] = useState([

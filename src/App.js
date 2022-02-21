@@ -24,7 +24,7 @@ const config = {
   helperUrl: "https://helper.testnet.near.org",
   explorerUrl: "https://explorer.testnet.near.org",
 };
-const CLIENT_URL="metatravel.vercel.app"
+const CLIENT_URL="https://metatravel.vercel.app"
 
 export default function App() {
   const [near, setNear] = useState();
