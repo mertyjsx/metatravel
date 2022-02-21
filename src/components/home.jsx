@@ -19,9 +19,9 @@ import {
   Link
 
 } from "react-router-dom";
-import deluxe from "../assets/roomImages/deluxe-suit.png"
-import master from "../assets/roomImages/master-suit.png"
-import superior from "../assets/roomImages/superior-room.png"
+import deluxe from "../../public/2.jpg";
+import master from "../../public/0.jpg";
+import superior from "../../public/1.jpg";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
