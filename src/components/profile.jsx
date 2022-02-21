@@ -10,7 +10,13 @@ import Card from "./card"
 import { Button, Grid, TextField } from "@mui/material";
 import BookIcon from '@mui/icons-material/Book';
 import { collection, query, where, doc, setDoc,addDoc, getDocs } from "firebase/firestore";
-
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 import { app,db } from "../firebase";
 export default function IconLabelTabs({user,near,wallet}) {
   const [value, setValue] = React.useState(0);
@@ -71,7 +77,7 @@ setBookings(temp)
           </h2>
     <Tabs value={value} onChange={handleChange} aria-label="icon label tabs example">
     <Tab onClick={()=>setValue(0)} icon={<BookIcon />} label="Bookings" />
-      <Tab onClick={()=>setValue(1)} icon={<BurstModeIcon />} label="Nfts" />
+      <a href="https://wallet.testnet.near.org/?tab=collectibles"><Tab  icon={<BurstModeIcon />} label="Nfts" /></a>
      
     
     </Tabs>

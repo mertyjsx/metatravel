@@ -17,14 +17,14 @@ import Webgl from "./components/unityWebgl"
 global.Buffer = Buffer;
 const { connect, keyStores, WalletConnection } = nearAPI;
 const config = {
-  networkId: "mainnet",
+  networkId: "testnet",
   keyStore: new keyStores.BrowserLocalStorageKeyStore(),
-  nodeUrl: "https://rpc.mainnet.near.org",
-  walletUrl: "https://wallet.mainnet.near.org",
-  helperUrl: "https://helper.mainnet.near.org",
-  explorerUrl: "https://explorer.mainnet.near.org",
+  nodeUrl: "https://rpc.testnet.near.org",
+  walletUrl: "https://wallet.testnet.near.org",
+  helperUrl: "https://helper.testnet.near.org",
+  explorerUrl: "https://explorer.testnet.near.org",
 };
-
+const CLIENT_URL="metatravel.vercel.app"
 
 export default function App() {
   const [near, setNear] = useState();
@@ -54,10 +54,9 @@ export default function App() {
 
   const signIn = () => {
     wallet.requestSignIn(
-     "616a3afcca582619b0fa5eae57a4f79dff5a147bea4e31774cf61072248c9cfc", // contract requesting access
+     "skrite16.testnet", // contract requesting access
       "Metatravel", // optional
-      "https://metatravel.vercel.app"
-    );
+      CLIENT_URL    );
   };
   return (
     <Router>

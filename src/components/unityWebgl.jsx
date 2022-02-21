@@ -2,10 +2,10 @@ import React , {useEffect,useState}from "react";
 import Unity, { UnityContext } from "react-unity-webgl";
 
 const unityContext = new UnityContext({
-  loaderUrl: "/webgl/Build/1.loader.js",
-  dataUrl: "/webgl/Build/1.data",
-  frameworkUrl: "/webgl/Build/1.framework.js",
-  codeUrl: "/webgl/Build/1.wasm",
+  loaderUrl: "/webgl/Build/Meta-test.loader.js",
+  dataUrl: "/webgl/Build/Meta-test.data",
+  frameworkUrl: "/webgl/Build/Meta-test.framework.js",
+  codeUrl: "/webgl/Build/Meta-test.wasm",
 });
 
 function App() {

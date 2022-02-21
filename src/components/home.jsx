@@ -19,6 +19,9 @@ import {
   Link
 
 } from "react-router-dom";
+import deluxe from "../assets/roomImages/deluxe-suit.png"
+import master from "../assets/roomImages/master-suit.png"
+import superior from "../assets/roomImages/superior-room.png"
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -36,13 +39,13 @@ function Copyright() {
 }
 
 const cards = [{
-image:"https://vwartclub.com/media/projects/3322/1.jpg",name:"luxury room",city:"Antalya",id:0
+image:deluxe,name:"deluxe room",city:"Antalya",id:2
 
 },{
-    image:"https://vwartclub.com/media/projects/3322/1.jpg",name:"luxury room",city:"Antalya",id:1
+    image:master,name:"master room",city:"Antalya",id:0
     
     },{
-        image:"https://vwartclub.com/media/projects/3322/1.jpg",name:"luxury room",city:"Antalya",id:2
+        image:superior,name:"superior room",city:"Antalya",id:1
         
         }];
 
@@ -55,13 +58,7 @@ export default function Album() {
       
       <main>
         {/* Hero unit */}
-        <Box
-          sx={{
-            bgcolor: 'background.paper',
-            pt: 8,
-            pb: 6,
-          }}
-        >
+       
           <Container maxWidth="sm">
             <Typography
               component="h1"
@@ -85,9 +82,9 @@ export default function Album() {
               <Link to="/tour-hotel"><Button variant="outlined">Tour THE HOTEL</Button></Link>
             </Stack>
           </Container>
-        </Box>
+      
         
-        <Container sx={{ py: 8 }} maxWidth="md">
+        <Container sx={{ py: 8 }} maxWidth="lg">
           {/* End hero unit */}
           <Grid container spacing={4}>
             {cards.map((card) => (
@@ -110,9 +107,9 @@ export default function Album() {
           color="text.secondary"
           component="p"
         >
-          Something here to give the footer a purpose!
+         Metatravel
         </Typography>
-        <Copyright />
+      
       </Box>
       {/* End footer */}
     </ThemeProvider>

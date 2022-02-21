@@ -21,6 +21,7 @@ import * as nearAPI from "near-api-js";
 import Modal from "./modal";
 import TranscationModal from "./TransactionModal";
 import roomData from "../helper/roomData"
+import axios from "axios"
 
 
 const steps = ["Booking info", "Complete Booking"];
@@ -33,7 +34,7 @@ const products = [
   },
 ];
 
-const URL="https://metatravel.vercel.app"
+const URL="metatravel.vercel.app"
 
 export default function App({ wallet, near, user }) {
   const [state, setState] = useState([
@@ -105,7 +106,23 @@ console.log(query)
     console.log("hi");
     setModalTransaction(true);
   }
-
+  async function postData(url = '', data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
   const addCollection = async (signature) => {
     // Add a new document with a generated id
     console.log("data", user);
@@ -131,6 +148,14 @@ console.log(query)
 
         });
         console.log("Document written with ID: ", docRef);
+
+
+        // upload image and sent to server
+       let res=await postData('http://localhost:5000/mint_nft', {
+          url:`${URL}roomData[id]?.images[0]`,receiver_id:user,room_name:roomData[id].name,startDate:data.startDate,endDate:data.endDate,full_name:data.full_name
+        })
+  
+  
       }
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -145,7 +170,7 @@ console.log(query)
 
     //network config (replace testnet with mainnet or betanet)
     const provider = new providers.JsonRpcProvider(
-      "https://archival-rpc.mainnet.near.org"
+      "https://archival-rpc.testnet.near.org"
     );
 
     const TX_HASH = hash;
@@ -190,9 +215,9 @@ console.log(query)
 
   const signIn = () => {
     wallet.requestSignIn(
-      user, // contract requesting access
+     "skrite16.testnet", // contract requesting access
       "Metatravel", // optional
-      `https://metatravel.vercel.app/rooms?id=${id}`
+      `${URL}/rooms?id=${id}`
     );
   };
   const handleDate = (item) => {
@@ -240,7 +265,7 @@ console.log(query)
       var final_val = BigInt(usd_to_near * 1000000000000000000000000);
       console.log(final_val.toString());
       let res = await account.sendMoney(
-        "616a3afcca582619b0fa5eae57a4f79dff5a147bea4e31774cf61072248c9cfc", // receiver account
+        "skrite.testnet", // receiver account
         `${final_val}` // amount in yoctoNEAR
       );
 
@@ -332,9 +357,9 @@ else return (
               >
                 Next{" "}
               </Button>
-             <Link className="center" to={`/tour-hotel?room-id=${parseInt(id)+1}`}>
+             <Link className="center" to={`/tour-hotel?room-id=${id==="0"?3:parseInt(id)}`}>
              <Button
-                onClick={() => nextStep()}
+                
                 className="c-button"
                 variant="contained"
                 color="primary"
