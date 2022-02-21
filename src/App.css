@@ -213,7 +213,9 @@ a{
   height: 99vh;
   
 }
-
+.mt-1_{
+  margin-top: 5rem !important;
+}
 .purpleBox{
   background-color: black;
   padding: 1rem;

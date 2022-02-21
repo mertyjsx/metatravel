@@ -15,9 +15,9 @@ const Nav = ({signOut,user,signIn}) => {
   return (
     <Fragment>
       <div className="space-between navbarContainer">
-      <Link to="/" className="left">
+      <Link to="/" className="left center">
      
-
+<img style={{width:20,margin:10}} src={"/logo.png"} alt="logo"></img>
           Metatravel
          
               </Link>

@@ -73,15 +73,7 @@ export default function Album() {
             A new generation hotel reservation system powered by Near Protocol.
 
             </Typography>
-            <Typography variant="h5" align="center" color="text.secondary" paragraph>
-            By making hotel reservations with the Near Protocol infrastructure, you will protect your reservation at the maximum level.
-
-            </Typography>
-            <Typography variant="h5" align="center" color="text.secondary" paragraph>
-         
-If you are undecided about choosing a hotel room or if you are looking for a new experience, you can take a virtual tour of the hotel rooms on the web.
-
-              </Typography>
+          
         
             <Stack
               sx={{ pt: 4 }}
@@ -104,8 +96,19 @@ If you are undecided about choosing a hotel room or if you are looking for a new
               </Grid>
             ))}
           </Grid>
+         
         </Container>
+        <Container maxWidth="md">
+          <Typography className="mt-1_" variant="h5" align="center" color="text.secondary" paragraph>
+            By making hotel reservations with the Near Protocol infrastructure, you will protect your reservation at the maximum level.
 
+            </Typography>
+            <Typography variant="h5" align="center" color="text.secondary" paragraph>
+         
+If you are undecided about choosing a hotel room or if you are looking for a new experience, you can take a virtual tour of the hotel rooms on the web.
+
+              </Typography>
+              </Container>
       </main>
       {/* Footer */}
       <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
