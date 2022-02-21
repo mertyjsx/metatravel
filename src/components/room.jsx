@@ -215,7 +215,7 @@ console.log(query)
 
   const signIn = () => {
     wallet.requestSignIn(
-     "skrite16.testnet", // contract requesting access
+     "example-contract.testnet", // contract requesting access
       "Metatravel", // optional
       `${URL}/rooms?id=${id}`
     );

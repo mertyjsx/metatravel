@@ -54,7 +54,7 @@ export default function App() {
 
   const signIn = () => {
     wallet.requestSignIn(
-     "skrite16.testnet", // contract requesting access
+     "example-contract.testnet", // contract requesting access
       "Metatravel", // optional
       CLIENT_URL    );
   };
