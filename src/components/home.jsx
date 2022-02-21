@@ -119,7 +119,7 @@ If you are undecided about choosing a hotel room or if you are looking for a new
           color="text.secondary"
           component="p"
         >
-         Metatravel 
+         METATRAVEL
         </Typography>
       
       </Box>

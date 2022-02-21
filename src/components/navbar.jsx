@@ -18,7 +18,7 @@ const Nav = ({signOut,user,signIn}) => {
       <Link to="/" className="left center">
      
 <img style={{width:30,margin:10}} src={"/logo.png"} alt="logo"></img>
-          Metatravel
+<span style={{color:"#1976d2"}}> META</span>TRAVEL
          
               </Link>
           {user? <div className="center">
