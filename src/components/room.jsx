@@ -21,7 +21,7 @@ import * as nearAPI from "near-api-js";
 import Modal from "./modal";
 import TranscationModal from "./TransactionModal";
 import roomData from "../helper/roomData"
-import axios from "axios"
+
 
 
 const steps = ["Booking info", "Complete Booking"];
