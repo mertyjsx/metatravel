@@ -73,8 +73,8 @@ export default function Album() {
             A new generation hotel reservation system powered by Near Protocol.
 
             </Typography>
-          
-        
+          <div className="nearContainer"> <img style={{width:"30%",alignSelf:"center"}} src="/near_logo.png"></img></div>
+       
             <Stack
               sx={{ pt: 4 }}
               direction="row"

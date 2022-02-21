@@ -17,7 +17,7 @@ const Nav = ({signOut,user,signIn}) => {
       <div className="space-between navbarContainer">
       <Link to="/" className="left center">
      
-<img style={{width:20,margin:10}} src={"/logo.png"} alt="logo"></img>
+<img style={{width:30,margin:10}} src={"/logo.png"} alt="logo"></img>
           Metatravel
          
               </Link>
@@ -52,7 +52,7 @@ const Nav = ({signOut,user,signIn}) => {
                        color="primary"
                        onClick={()=>signIn()}
                      >
-                       Connect 
+                       Connect to Near
                      </div>
                      </div>}
       </div>
