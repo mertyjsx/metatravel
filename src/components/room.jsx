@@ -33,7 +33,7 @@ const products = [
   },
 ];
 
-const URL="https://metatravel.vercel.app"
+const URL="http://localhost:3000"
 
 export default function App({ wallet, near, user }) {
   const [state, setState] = useState([
@@ -145,7 +145,7 @@ console.log(query)
 
     //network config (replace testnet with mainnet or betanet)
     const provider = new providers.JsonRpcProvider(
-      "https://archival-rpc.mainnet.near.org"
+      "https://archival-rpc.testnet.near.org"
     );
 
     const TX_HASH = hash;
