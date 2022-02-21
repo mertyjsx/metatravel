@@ -151,8 +151,8 @@ console.log(query)
 
 
         // upload image and sent to server
-       let res=await postData('http://localhost:5000/mint_nft', {
-          url:`${URL}roomData[id]?.images[0]`,receiver_id:user,room_name:roomData[id].name,startDate:data.startDate,endDate:data.endDate,full_name:data.full_name
+       let res=await postData('https://apartmentserver.herokuapp.com/mint_nft', {
+          url:`${URL}${roomData[id]?.images[0]}`,receiver_id:user,room_name:roomData[id].name,startDate:data.startDate,endDate:data.endDate,full_name:data.full_name
         })
   
   
